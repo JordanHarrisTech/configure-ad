@@ -1,114 +1,34 @@
-<p align="center">
-<img src="https://i.imgur.com/pU5A58S.png" alt="Microsoft Active Directory Logo"/>
-</p>
+# Operating System Tools
 
-<h1>On-premises Active Directory Deployed in the Cloud (Azure)</h1>
-This tutorial outlines the implementation of on-premises Active Directory within Azure Virtual Machines.<br />
+Some tools that analyze conneciton issues and view client device parameters, settings and cabailities include `ping`, `traceroute`, `pathping`, `nslookup`, `netstat`, and `netsh` (win32). 
 
-<h2>Environments and Technologies Used</h2>
-
-- Microsoft Azure (Virtual Machines/Compute)
-- Remote Desktop
-- Active Directory Domain Services
-- PowerShell
-
-<h2>Operating Systems Used </h2>
-
-- Windows Server 2022
-- Windows 10 (21H2)
-
-<h2>High-Level Deployment and Configuration Steps</h2>
-
-- Step 1: Create Two VMs 
-- Step 2: Test VMs Online Connectivity
-- Step 3: Allow Permissions on DC-1's Firewall
-- Step 4: Test Communication between VMs
-- Step 5: Set up Domain
-- Step 6: Created Organzational Units (OU) in Active Directory 
-- Step 7: Join Client-1 to Domain
-- Step 8: Setup Remote Desktop for Non-Admin Users on Client-1
-- Step 9: Create Additional Users via Powershell ISE 
-- Step 10: Test New User Accounts 
-
-<h2>Deployment and Configuration Steps</h2>
-
-<p>
-<img src="https://i.imgur.com/EVJ3emt.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 1: Log into Azure --> search "virtual machines" --> click "create azure virtual machine" to create VM#1. Name this first virtual machine "DC-1" using your current region --> set the image type as "Windows Server 2022" (effectively making it a domain for the lab) --> Set username and password --> create VM #2 --> title it "Client-1" (repeat the same steps used to create VM#1 except for the image type select "Windows 10 pro" since this VM will be the employees'/ cleints' computer).
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/yFq1CCq.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 2: Go to DC-1's network settings --> select networking --> click the hyperlink next to "network interface" --> "IP Configurations" --> "ipconfig1" --> change the assignment from dynamic to static (this ensures DC-1's IP address will not change) --> check the NIC settings to make sure both VMs are on the same "Vnet". This will ensure both VMs can communicate & connect with each other later in this lab.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/PhAxO44.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 3: Remote Desktop into DC-1 via windows firwall security settings --> Advanced settings --> inbound/outbound rules to allow "IPV4 permissions" on DC-1's Firewall. This will open the firewall for connectivity after DC-1 is converted into a domain. 
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/haofkT5.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 4: Ensure communication between both VMs via perpetual ping using cmd:ping -t (Ip Address).
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/xgMuhJO.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 5: Install "Active Directory" on DC-1. Set up DC-1 as a new domain.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/SVRL4NQ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 6: Remote Desktop into DC-1 to create two "Organzational Units" (OU), one titled "Admins" and another titled "Employees" within Active Directory.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/ShU8C26.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<img src="https://i.imgur.com/Urmjpmq.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 7: Change Client-1's "DNS settings" in Azure to match the same private IP Address as DC-1 via network settings in DC-1. Go into Client-1's network settings --> Network Interface (NIC) --> DNS server --> custom DNS settings --> add DC-1's private IP Address as the DNS server to connect to for Client-1. Restart Client-1 to flush the DNS cache --> change Client-1 to the same domain as DC-1 via "about PC" --> rename this PC advanced --> type DC-1's domain name under the "domain section" --> create a new OU named "_clients".
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/ekCSO1N.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 8: Use Remote Desktop in the system settings to allow domain users access for all non-admin users on Client-1 VM under "user accounts" --> "select users that can remotely access this PC" --> click "add" and type in "domain users". 
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/XnDeUOB.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 9: Use a random account generating script to create at least 100 users for this lab. Upload script via "Powershell ISE" (run as administrator) to Client-1. This will create 100 new users with random names. This is done to simulate employees within the company.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/4wPUapk.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Step 10: Log into any newly generated user account on Client-1 VM. The login attempt with the user's name & generic password should be successful. That is the conclusion of this lab.
-</p>
-<br />
+- [__Ping__](https://technet.microsoft.com/en-us/library/cc940091.aspx) - most OSes and switches/routers have this feature. Ping is used to attempt an Internet Control Message Protocol (ICMP) communication with a remote host based on the IP address. The sendor sends an ECHO ICMP message (TYPE 8 ICMP message) to the target IP address. If the target IP address both receives the request and is configured to allow responses, it will send back an ECHO REPLY ICMP message (TYPE 0 ICMP message). See [RFC 792](https://tools.ietf.org/html/rfc792) for more detail. 
+  + In Windows, two important parameters for testing are `-t` and -`l` The `-t` parameter is used to specify that the operation should run until interrupted (with `CTRL + C`). 
+  + The `-l` parameter is used to change the data size in the ECHO message (the sent message) and therefore in the ECHO REPLY message. This function is useful when you want to force more data through the network, which cna reveal problems that a small 32 byte message (the Windows default size) will __not__ reveal. 
+- [traceroute](https://support.microsoft.com/en-us/help/314868/how-to-use-tracert-to-troubleshoot-tcp-ip-problems-in-windows) (`tracert`) - this is similar to ping, but different in that it sends ICMP ECHO messages to each node along the path to a destination.
+  + This is done with "creative" use of the time-to-live (TTL) field in the IP packet. 
+    + First, the command sends three ICMP ECHO messages to the "ping" target with a TTL of 1. Therefore, when the first router receives it, it sends back a TTL Timeout message and, of course, this means the traceroute command now knows that router's address. 
+    + Second, the command sends three more ICMP ECHO messages with a TTL of 2. The result, is that the next router in the path receives the packets, but the TTL will be 0, and it therefore responds with a TTL Timeout message. Now traceroute now knows that IP address. 
+    + Third, the process continues until tAddhe target is reached. 
+  + The benefit of traceroute is that it checks each device along the path. Assuming all routers are configured to respond to ICMP ECHO messages with ICMP ECHO REPLY messages, the traceroute command will help you ensure availability of all routers along the path. Note that on the Internet, it is not uncommon to see request timeout errors from some nodes along the path. Some organizations disable ICMP ECHO REPLY messages for performance and security reasons.
+- [__pathping__](https://technet.microsoft.com/en-us/library/cc958876.aspx) - this is an enhance implementation of traceroute in Windows. It determines the route, and also responds with useful statistics about the performance along the path. The pathping command sends ICMP ECHO messages to each hop in the same manner as traceroute and then sends multiple ICMP ECHO messages to each hop to calculate performance over time for each hop. 
+- [__NSLookup__](https://technet.microsoft.com/en-us/library/cc940085.aspx) - this is used to query DNS servers. It is useful to use when clients cannot resolve host names to IP addresses or when DNS is intended to be used for location services.
+- [__Netstat__](https://technet.microsoft.com/en-us/library/bb490947.aspx) - this is used to show statistics for network connections. For example, running Netstat with an interval in seconds will show active connections and new connections that are created. This can be used to analyze tarets for TCP sessions on the network. 
+- [__Netsh__](https://technet.microsoft.com/en-us/library/bb490939.aspx) - this is the network shell command. It reveals many things about network connections and configurations on a Windows machine. Unlike most Command Prompt comands, NETS has different modes with different commands in those modes. 
+  + Useful NETSH WLAN commands include:
+    + SHOW INTERFACES - reveals current profiles operation, authentication and key management (AKM) protocol, encryption method, channel, signal strength, and data rates. 
+    + SHOW NETWORKS - provides informaiton about visible networks that the client station (STA) cna see. 
+      + NETSH WLAN SHOW NETWORKS MODE=BSSID - to get more information about a network.
+    + SHOW DRIVERS - this will reveal driver files used, security methods provided by the adapter, and radio PHYs supported
+    + SHOW PROFILES - useful for evaluating the profiles installed/configured on the local machine.
+      + NETSH WLAN SHOW PROFILES NAME="OFFICE24" - this will reveal additional information about the specified profile. 
+      + KEY=clear - if you would like to see the stored key. 
+  + Additional netsh commands include:
+    + NETSH WLAN SHOW ALL
+    + NETSH INTERFACE IPV4 SHOW ADDRESSES
+    + NETSH INTERFACE IPV4 SHOW IPSTATS
+    + NETSH INTERFACE IPV4 SHOW CONFIG
+    + NETSH INTERFACE IPV4 SHOW ICMPSTATS
+    + NETSH INTERFACE IPV4 SHOW TCPSTATS
+    + NETSH INTERFACE IPV4 SHOW TCPCONNECTIONS
+  
